@@ -4,14 +4,17 @@ import {
   AppliedFilters,
   FieldNamesProps,
   FilterProps,
+  PlanetApi,
 } from "../../consts/interface";
 import FilterBox from "../filter-box/filter-box";
+import Result from "../result/result";
 import Search from "../search/search";
 import "./home.scss";
 
 export default function Home(): React.ReactElement {
   const [searchTexts, setSearchTexts] = React.useState("");
   const [filters, setFilters] = React.useState<FilterProps[]>(null);
+  const [planetApi, setPlanetApi] = React.useState<PlanetApi[]>(null);
   const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilters>({
     color: [],
     shape: [],
@@ -72,15 +75,13 @@ export default function Home(): React.ReactElement {
       }
     }
     axios
-      .get(`http://localhost:3000/planets?${params.toString()}`)
+      .get<PlanetApi[]>(`http://localhost:3000/planets?${params.toString()}`)
       .then((result) => {
         // console.log(result.data);
+        setPlanetApi(result.data);
       });
   };
 
-  React.useEffect(() => {
-    console.log(appliedFilters);
-  }, [appliedFilters]);
   React.useEffect(() => {
     searchApiCall();
   }, [searchTexts]);
@@ -95,6 +96,7 @@ export default function Home(): React.ReactElement {
         filters={filters}
         changeFiltersState={changeFiltersState}
       ></FilterBox>
+      <Result results={planetApi}></Result>
     </div>
   );
 }

@@ -14,3 +14,11 @@ export interface AppliedFilters {
   size: string[];
   color: string[];
 }
+
+export interface PlanetApi {
+  id: string;
+  name: string;
+  shape: string;
+  color: string;
+  size: string;
+}
