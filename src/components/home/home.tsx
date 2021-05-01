@@ -6,13 +6,15 @@ import {
   FilterProps,
   PlanetApi,
 } from "../../consts/interface";
+import { GET_DATA, SET_DATA, UPDATE_DATA } from "../../consts/local-storage";
 import FilterBox from "../filter-box/filter-box";
 import Result from "../result/result";
 import Search from "../search/search";
 import "./home.scss";
 
 export default function Home(): React.ReactElement {
-  const [searchTexts, setSearchTexts] = React.useState("");
+  const storeName = "planet";
+  const [searchTexts, setSearchTexts] = React.useState<string>(null);
   const [filters, setFilters] = React.useState<FilterProps[]>(null);
   const [planetApi, setPlanetApi] = React.useState<PlanetApi[]>(null);
   const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilters>({
@@ -34,6 +36,7 @@ export default function Home(): React.ReactElement {
         return item !== id;
       });
     }
+    UPDATE_DATA(storeName, key, appliedFilters[key]);
     setAppliedFilters(tempFilter);
     console.log(appliedFilters);
     searchApiCall();
@@ -45,6 +48,7 @@ export default function Home(): React.ReactElement {
     let size = axios.get<FieldNamesProps[]>(`http://localhost:3000/sizes`);
     Promise.all([shapes, colors, size]).then(
       ([shapeResult, colorResult, sizeResult]) => {
+        let filters: AppliedFilters = GET_DATA(storeName);
         setFilters([
           {
             headerName: "Shapes",
@@ -62,6 +66,22 @@ export default function Home(): React.ReactElement {
             queryParamsId: "size",
           },
         ]);
+        if (filters && !filters.color && !filters.shape && !filters.size) {
+          SET_DATA(storeName, {
+            color: [],
+            shape: [],
+            size: [],
+            q: "",
+          });
+        } else {
+          setSearchTexts(filters.q);
+          setAppliedFilters({
+            color: filters.color,
+            shape: filters.shape,
+            size: filters.size,
+          });
+        }
+        searchApiCall();
       },
     );
   }, []);
@@ -83,17 +103,19 @@ export default function Home(): React.ReactElement {
   };
 
   React.useEffect(() => {
+    searchTexts !== null && UPDATE_DATA(storeName, "q", searchTexts);
     searchApiCall();
   }, [searchTexts]);
-
   return (
     <div className="container">
       <Search
         searchTexts={searchTexts}
+        onEnter={searchApiCall}
         onSearchTextChange={handleSearchTextChange}
       ></Search>
       <FilterBox
         filters={filters}
+        appliedFilter={appliedFilters}
         changeFiltersState={changeFiltersState}
       ></FilterBox>
       <Result results={planetApi}></Result>

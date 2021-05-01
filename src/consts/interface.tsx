@@ -13,6 +13,7 @@ export interface AppliedFilters {
   shape: string[];
   size: string[];
   color: string[];
+  q?: string;
 }
 
 export interface PlanetApi {

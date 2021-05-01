@@ -7,6 +7,7 @@ import * as React from "react";
 
 export interface SearchProps {
   searchTexts?: string;
+  onEnter: () => void;
   onSearchTextChange?: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
   >;
@@ -40,7 +41,13 @@ const Search: React.FC<SearchProps> = (props: SearchProps) => {
         placeholder="Search Planets"
         inputProps={{ "aria-label": "search planets" }}
         onChange={props.onSearchTextChange}
-        value={props.searchTexts}
+        onKeyPress={(event) => {
+          if (event.charCode === 13) {
+            event.preventDefault();
+            props.onEnter();
+          }
+        }}
+        value={props.searchTexts || ""}
       />
       <IconButton
         type="submit"

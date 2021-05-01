@@ -1,12 +1,12 @@
-const GET_DATA = (rootName) => {
-  let data = {};
+const GET_DATA = (rootName: string) => {
+  let data: any = {};
   if (window.localStorage) {
     data = JSON.parse(localStorage.getItem(rootName)) || {};
   }
   return data;
 };
 
-const SET_DATA = (rootName, data) => {
+const SET_DATA = (rootName: string, data) => {
   typeof data === "object" && (data = JSON.stringify(data));
   if (window.localStorage) {
     localStorage.setItem(rootName, data);
