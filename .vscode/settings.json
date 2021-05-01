@@ -1,0 +1,46 @@
+{
+    "window.zoomLevel": 0,
+    "explorer.confirmDelete": false,
+    "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "editor.minimap.enabled": false,
+    "files.autoSave": "off",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "explorer.confirmDragAndDrop": false,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+    },
+    "editor.formatOnSave": true,
+    "eslint.alwaysShowStatus": true,
+    "eslint.codeAction.disableRuleComment": {
+        "editor.formatOnSave": false
+    },
+    "git.confirmSync": false,
+    "prettier.singleQuote": false,
+    "prettier.withNodeModules": true,
+    "prettier.tabWidth": 2,
+    "prettier.printWidth": 140,
+    "prettier.bracketSpacing": true,
+    "eslint.validate": [
+        "javascript",
+        "typescript"
+    ],
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[scss]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 140
+}
