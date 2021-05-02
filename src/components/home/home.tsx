@@ -5,11 +5,8 @@ import {
   PlanetApi,
   ResponseFilterArray,
 } from "../../management/interface";
-import {
-  GetValidAppliedFilters,
-  UPDATE_DATA,
-} from "../../management/local-storage";
-import setFilterUtil from "../../management/utils";
+import { UPDATE_DATA } from "../../management/local-storage";
+import { GetValidAppliedFilters, setFilterUtil } from "../../management/utils";
 import FilterBox from "../filter-box/filter-box";
 import Result from "../result/result";
 import Search from "../search/search";
@@ -17,7 +14,6 @@ import "./home.scss";
 
 const storeName = "planet";
 let appliedFilters = GetValidAppliedFilters(storeName);
-
 let promiseResolved = false;
 
 export default function Home(): React.ReactElement {

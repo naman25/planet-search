@@ -1,5 +1,3 @@
-import { AppliedFilters } from "./interface";
-
 const GET_DATA = (rootName: string) => {
   let data: any = {};
   if (window.localStorage) {
@@ -21,23 +19,4 @@ const UPDATE_DATA = (rootName, label, value) => {
   SET_DATA(rootName, JSON.stringify(storageData));
 };
 
-const GetValidAppliedFilters = (storeName: string): AppliedFilters => {
-  let filters: AppliedFilters = GET_DATA(storeName);
-  if (isAppliedFiltersInValid(filters)) {
-    return filters;
-  }
-  filters = {
-    color: [],
-    shape: [],
-    size: [],
-    q: "",
-  };
-  SET_DATA(storeName, filters);
-  return filters;
-};
-
-export const isAppliedFiltersInValid = (filters: AppliedFilters) => {
-  return filters && filters.color && filters.shape && filters.size;
-};
-
-export { GET_DATA, SET_DATA, UPDATE_DATA, GetValidAppliedFilters };
+export { GET_DATA, SET_DATA, UPDATE_DATA };
