@@ -1,4 +1,3 @@
-import axios from "axios";
 import * as React from "react";
 import ApiManagement from "../../management/api-mamagement";
 import {
@@ -24,21 +23,18 @@ let appliedFilters = {
 let promiseResolved = false;
 export default function Home(): React.ReactElement {
   const storeName = "planet";
+
   const [searchTexts, setSearchTexts] = React.useState<string>(null);
   const [filters, setFilters] = React.useState<FilterProps[]>(null);
   const [planetApi, setPlanetApi] = React.useState<PlanetApi[]>(null);
-  // const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilters>({
-  //   color: [],
-  //   shape: [],
-  //   size: [],
-  // });
+
   const handleSearchTextChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setSearchTexts(event.currentTarget.value);
   };
+
   const changeFiltersState = (key: string, id: string, checked: boolean) => {
-    // let tempFilter = appliedFilters;
     if (checked) {
       appliedFilters[key].push(id);
     } else {
@@ -47,7 +43,6 @@ export default function Home(): React.ReactElement {
       });
     }
     UPDATE_DATA(storeName, key, appliedFilters[key]);
-    // setAppliedFilters(tempFilter);
     console.log(appliedFilters);
     searchApiCall();
   };
@@ -82,11 +77,6 @@ export default function Home(): React.ReactElement {
           });
         } else {
           setSearchTexts(filters.q);
-          // setAppliedFilters({
-          //   color: filters.color,
-          //   shape: filters.shape,
-          //   size: filters.size,
-          // });
           appliedFilters = {
             color: filters.color,
             shape: filters.shape,
@@ -108,12 +98,9 @@ export default function Home(): React.ReactElement {
         params.set(key, appliedFilters[key].toString());
       }
     }
-    axios
-      .get<PlanetApi[]>(`http://localhost:3000/planets?${params.toString()}`)
-      .then((result) => {
-        // console.log(result.data);
-        setPlanetApi(result.data);
-      });
+    ApiManagement.planetApi(params.toString()).then((result) => {
+      setPlanetApi(result.data);
+    });
   };
 
   React.useEffect(() => {

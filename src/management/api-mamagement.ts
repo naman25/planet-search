@@ -1,32 +1,22 @@
 import Axios from "axios";
-import { FieldNamesProps } from "./interface";
 
 class ApiManagement {
   private static domain = "http://localhost:3000/";
   private static shapesApi = "shapes";
-  private static ColorsApi = "colors";
-  private static SizesApi = "sizes";
-  public static getShapes = () => {
-    return Axios.get<FieldNamesProps[]>(
-      ApiManagement.domain + ApiManagement.shapesApi,
-    );
-  };
-  public static getColors = () => {
-    return Axios.get<FieldNamesProps[]>(
-      ApiManagement.domain + ApiManagement.ColorsApi,
-    );
-  };
-  public static getSizes = () => {
-    return Axios.get<FieldNamesProps[]>(
-      ApiManagement.domain + ApiManagement.SizesApi,
-    );
+  private static colorsApi = "colors";
+  private static sizesApi = "sizes";
+  private static getData = (path: string) => {
+    return Axios.get(ApiManagement.domain + path);
   };
   public static initializeApi = () => {
     return Promise.all([
-      ApiManagement.getShapes(),
-      ApiManagement.getColors(),
-      ApiManagement.getSizes(),
+      ApiManagement.getData(ApiManagement.shapesApi),
+      ApiManagement.getData(ApiManagement.colorsApi),
+      ApiManagement.getData(ApiManagement.sizesApi),
     ]);
+  };
+  public static planetApi = (params: string) => {
+    return ApiManagement.getData("planets?" + params);
   };
 }
 
