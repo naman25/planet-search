@@ -1,31 +1,29 @@
 import * as React from "react";
 import ApiManagement from "../../management/api-mamagement";
 import {
-  AppliedFilters,
   FilterProps,
   PlanetApi,
+  ResponseFilterArray,
 } from "../../management/interface";
 import {
-  GET_DATA,
-  SET_DATA,
+  GetValidAppliedFilters,
   UPDATE_DATA,
 } from "../../management/local-storage";
+import setFilterUtil from "../../management/utils";
 import FilterBox from "../filter-box/filter-box";
 import Result from "../result/result";
 import Search from "../search/search";
 import "./home.scss";
 
-let appliedFilters = {
-  color: [],
-  shape: [],
-  size: [],
-};
+const storeName = "planet";
+let appliedFilters = GetValidAppliedFilters(storeName);
+
 let promiseResolved = false;
 
 export default function Home(): React.ReactElement {
-  const storeName = "planet";
-
-  const [searchTexts, setSearchTexts] = React.useState<string>(null);
+  const [searchTexts, setSearchTexts] = React.useState<string>(
+    appliedFilters.q,
+  );
   const [filters, setFilters] = React.useState<FilterProps[]>(null);
   const [planetApi, setPlanetApi] = React.useState<PlanetApi[]>(null);
 
@@ -49,51 +47,20 @@ export default function Home(): React.ReactElement {
   };
 
   React.useEffect(() => {
-    ApiManagement.initializeApi().then(
-      ([shapeResult, colorResult, sizeResult]) => {
-        let filters: AppliedFilters = GET_DATA(storeName);
-        setFilters([
-          {
-            headerName: "Shapes",
-            fields: shapeResult.data,
-            queryParamsId: "shape",
-          },
-          {
-            headerName: "Colors",
-            fields: colorResult.data,
-            queryParamsId: "color",
-          },
-          {
-            headerName: "Sizes",
-            fields: sizeResult.data,
-            queryParamsId: "size",
-          },
-        ]);
-        if (filters && !filters.color && !filters.shape && !filters.size) {
-          SET_DATA(storeName, {
-            color: [],
-            shape: [],
-            size: [],
-            q: "",
-          });
-        } else {
-          setSearchTexts(filters.q);
-          appliedFilters = {
-            color: filters.color,
-            shape: filters.shape,
-            size: filters.size,
-          };
-          searchApiCall();
-        }
-        promiseResolved = true;
-      },
-    );
+    ApiManagement.initializeApi().then((filters: ResponseFilterArray) => {
+      setFilters([
+        setFilterUtil("Shapes", filters.shapes, "shape"),
+        setFilterUtil("Colors", filters.colors, "color"),
+        setFilterUtil("Sizes", filters.sizes, "size"),
+      ]);
+      promiseResolved = true;
+      searchApiCall();
+    });
   }, []);
 
   const searchApiCall = () => {
     if (!promiseResolved) return;
     let params = new URLSearchParams();
-    searchTexts && params.set("q", searchTexts);
     for (let key in appliedFilters) {
       if (appliedFilters[key].length > 0) {
         params.set(key, appliedFilters[key].toString());
@@ -105,9 +72,10 @@ export default function Home(): React.ReactElement {
   };
 
   React.useEffect(() => {
-    searchTexts !== null &&
-      promiseResolved &&
+    if (searchTexts !== null && promiseResolved) {
+      appliedFilters["q"] = searchTexts;
       UPDATE_DATA(storeName, "q", searchTexts);
+    }
     searchApiCall();
   }, [searchTexts]);
   return (

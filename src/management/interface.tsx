@@ -23,3 +23,9 @@ export interface PlanetApi {
   color: string;
   size: string;
 }
+
+export interface ResponseFilterArray {
+  colors: FieldNamesProps[];
+  shapes: FieldNamesProps[];
+  sizes: FieldNamesProps[];
+}
