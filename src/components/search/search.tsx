@@ -50,7 +50,7 @@ const Search: React.FC<SearchProps> = (props: SearchProps) => {
         value={props.searchTexts || ""}
       />
       <IconButton
-        type="submit"
+        onClick={props.onEnter}
         className={classes.iconButton}
         aria-label="search"
       >

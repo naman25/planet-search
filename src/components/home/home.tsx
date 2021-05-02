@@ -21,6 +21,7 @@ let appliedFilters = {
   size: [],
 };
 let promiseResolved = false;
+
 export default function Home(): React.ReactElement {
   const storeName = "planet";
 
