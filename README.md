@@ -29,14 +29,6 @@ Contains following in the setup.
 - Build app continuously (HMR enabled)
 - App served @ `http://localhost:8080`
 
-**Production**
-
-`npm run start-prod`
-
-- Build app once (HMR disabled) to `/dist/`
-- App served @ `http://localhost:3000`
-
----
 
 **All commands**
 
