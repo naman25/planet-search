@@ -5,8 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import MenuIcon from "@material-ui/icons/Menu";
 import * as React from "react";
-import { AppliedFilters, FilterProps } from "../../consts/interface";
-import useWindowDimensions from "../../consts/window-size";
+import { AppliedFilters, FilterProps } from "../../management/interface";
+import useWindowDimensions from "../../management/window-size";
 import "./filter-box.scss";
 
 export interface SearchProps {

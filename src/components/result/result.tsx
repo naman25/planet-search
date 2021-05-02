@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PlanetApi } from "../../consts/interface";
+import { PlanetApi } from "../../management/interface";
 import "./result.scss";
 
 interface ResultProps {

@@ -1,52 +1,59 @@
 import axios from "axios";
 import * as React from "react";
+import ApiManagement from "../../management/api-mamagement";
 import {
   AppliedFilters,
-  FieldNamesProps,
   FilterProps,
   PlanetApi,
-} from "../../consts/interface";
-import { GET_DATA, SET_DATA, UPDATE_DATA } from "../../consts/local-storage";
+} from "../../management/interface";
+import {
+  GET_DATA,
+  SET_DATA,
+  UPDATE_DATA,
+} from "../../management/local-storage";
 import FilterBox from "../filter-box/filter-box";
 import Result from "../result/result";
 import Search from "../search/search";
 import "./home.scss";
 
+let appliedFilters = {
+  color: [],
+  shape: [],
+  size: [],
+};
+let promiseResolved = false;
 export default function Home(): React.ReactElement {
   const storeName = "planet";
   const [searchTexts, setSearchTexts] = React.useState<string>(null);
   const [filters, setFilters] = React.useState<FilterProps[]>(null);
   const [planetApi, setPlanetApi] = React.useState<PlanetApi[]>(null);
-  const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilters>({
-    color: [],
-    shape: [],
-    size: [],
-  });
+  // const [appliedFilters, setAppliedFilters] = React.useState<AppliedFilters>({
+  //   color: [],
+  //   shape: [],
+  //   size: [],
+  // });
   const handleSearchTextChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setSearchTexts(event.currentTarget.value);
   };
   const changeFiltersState = (key: string, id: string, checked: boolean) => {
-    let tempFilter = appliedFilters;
+    // let tempFilter = appliedFilters;
     if (checked) {
-      tempFilter[key].push(id);
+      appliedFilters[key].push(id);
     } else {
-      tempFilter[key] = tempFilter[key].filter((item: string) => {
+      appliedFilters[key] = appliedFilters[key].filter((item: string) => {
         return item !== id;
       });
     }
     UPDATE_DATA(storeName, key, appliedFilters[key]);
-    setAppliedFilters(tempFilter);
+    // setAppliedFilters(tempFilter);
     console.log(appliedFilters);
     searchApiCall();
   };
 
   React.useEffect(() => {
-    let shapes = axios.get<FieldNamesProps[]>(`http://localhost:3000/shapes`);
-    let colors = axios.get<FieldNamesProps[]>(`http://localhost:3000/colors`);
-    let size = axios.get<FieldNamesProps[]>(`http://localhost:3000/sizes`);
-    Promise.all([shapes, colors, size]).then(
+    ApiManagement.initializeApi().then(
       ([shapeResult, colorResult, sizeResult]) => {
         let filters: AppliedFilters = GET_DATA(storeName);
         setFilters([
@@ -75,18 +82,25 @@ export default function Home(): React.ReactElement {
           });
         } else {
           setSearchTexts(filters.q);
-          setAppliedFilters({
+          // setAppliedFilters({
+          //   color: filters.color,
+          //   shape: filters.shape,
+          //   size: filters.size,
+          // });
+          appliedFilters = {
             color: filters.color,
             shape: filters.shape,
             size: filters.size,
-          });
+          };
+          searchApiCall();
         }
-        searchApiCall();
+        promiseResolved = true;
       },
     );
   }, []);
 
   const searchApiCall = () => {
+    if (!promiseResolved) return;
     let params = new URLSearchParams();
     searchTexts && params.set("q", searchTexts);
     for (let key in appliedFilters) {
@@ -103,7 +117,9 @@ export default function Home(): React.ReactElement {
   };
 
   React.useEffect(() => {
-    searchTexts !== null && UPDATE_DATA(storeName, "q", searchTexts);
+    searchTexts !== null &&
+      promiseResolved &&
+      UPDATE_DATA(storeName, "q", searchTexts);
     searchApiCall();
   }, [searchTexts]);
   return (
